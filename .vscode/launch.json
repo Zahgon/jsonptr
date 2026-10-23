@@ -2,59 +2,42 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "All tests",
-            "type": "go",
-            "request": "launch",
-            "mode": "test",
-            "program": "${workspaceRoot}"
+            "name": "Debug tests (run mvn -Dmaven.surefire.debug test first)",
+            "type": "java",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
         },
         {
-            "name": "test: Get",
-            "type": "go",
-            "request": "launch",
-            "mode": "test",
-            "program": "${workspaceRoot}",
-            "args": [
-                "-test.v",
-                "-test.run",
-                "TestGet"
-            ]
+            "name": "Debug test: JsonPtrTest.testGet (run mvn -Dmaven.surefire.debug -Dtest=JsonPtrTest#testGet test first)",
+            "type": "java",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
         },
         {
-            "name": "test: Escape",
-            "type": "go",
+            "name": "jsonptr parse",
+            "type": "java",
             "request": "launch",
-            "mode": "test",
-            "program": "${workspaceRoot}",
-            "args": [
-                "-test.v",
-                "-test.run",
-                "TestEscape"
-            ]
+            "mainClass": "jsonptr.Main",
+            "projectName": "jsonptr",
+            "args": ["parse", "/a~1b/0"]
         },
         {
-            "name": "test: Unescape",
-            "type": "go",
+            "name": "jsonptr escape",
+            "type": "java",
             "request": "launch",
-            "mode": "test",
-            "program": "${workspaceRoot}",
-            "args": [
-                "-test.v",
-                "-test.run",
-                "TestUnescape"
-            ]
+            "mainClass": "jsonptr.Main",
+            "projectName": "jsonptr",
+            "args": ["escape", "a/b~c"]
         },
         {
-            "name": "test: PointerParse",
-            "type": "go",
+            "name": "jsonptr unescape",
+            "type": "java",
             "request": "launch",
-            "mode": "test",
-            "program": "${workspaceRoot}",
-            "args": [
-                "-test.v",
-                "-test.run",
-                "TestPointerParse"
-            ]
+            "mainClass": "jsonptr.Main",
+            "projectName": "jsonptr",
+            "args": ["unescape", "a~1b~0c"]
         }
     ]
 }

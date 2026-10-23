@@ -1,11 +1,11 @@
+MAKEFLAGS += --no-print-directory
 
+.PHONY: mvn-version mvn-get
 
-go ?= GO111MODULE=on go
-export go
+# Version of the newest commit that changed the library: 0.0.0-<UTC commit time>-<12-digit hash>.
+mvn-version: pom.xml $(shell find src/main/java -name '*.java')
+	@TZ=UTC git log -1 '--date=format-local:%Y%m%d%H%M%S' --abbrev=12 '--pretty=tformat:0.0.0-%cd-%h' $^
 
-go-version: go.mod $(shell $(go) list -f '{{$$Dir := .Dir}}{{range .GoFiles}}{{$$Dir}}/{{.}} {{end}}' ./...)
-	@TZ=UTC git log -1 '--date=format-local:%Y%m%d%H%M%S' --abbrev=12 '--pretty=tformat:v0.0.0-%cd-%h' $^
-
-go-get:
-	@echo $(go) get $(shell $(go) list .)@$(shell $(MAKE) -f $(firstword $(MAKEFILE_LIST)) go-version)
-
+# Maven command that fetches this library at that version.
+mvn-get:
+	@echo mvn dependency:get -Dartifact=$(shell sed -n 's:^  <groupId>\(.*\)</groupId>$$:\1:p' pom.xml):$(shell sed -n 's:^  <artifactId>\(.*\)</artifactId>$$:\1:p' pom.xml):$(shell $(MAKE) -s -f $(firstword $(MAKEFILE_LIST)) mvn-version)

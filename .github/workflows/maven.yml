@@ -1,0 +1,42 @@
+name: Java
+on: [push]
+jobs:
+
+  build:
+    name: Test Java ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    env:
+      java_latest: '21'
+    strategy:
+      matrix:
+        java:
+        - '17'
+        - '21'
+
+    steps:
+
+    - name: Check out the repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{ matrix.java }}
+        cache: maven
+
+    # The coverage profile adds JaCoCo, which writes target/site/jacoco/jacoco.xml.
+    - name: Build and test
+      run: mvn -B verify -Pcoverage
+
+    # https://app.codecov.io/github.com/dolmen-go/jsonptr
+    - name: Upload coverage to Codecov
+      if: matrix.java == env.java_latest
+      uses: codecov/codecov-action@v5
+      with:
+        disable_search: true
+        files: ./target/site/jacoco/jacoco.xml
+        disable_telem: true
+        report_type: coverage
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
